@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before-install:
+  - docker build -t mankit752/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true USERNAME/react-test npm test
+
+after_success:
+  - docker build -t mankit752/multi-client -f ./client
+  - docker build -t mankit752/multi-nginx -f ./nginx
+  - docker build -t mankit752/multi-server -f ./server
+  - docker build -t mankit752/multi-worker -f ./worker
+  #Log in to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #Take docker images and push them to Docker hub
+  - docker push mankit752/multi-client
+  - docker push mankit752/multi-nginx
+  - docker push mankit752/multi-server
+  - docker push mankit752/multi-worker
