@@ -6,7 +6,7 @@ before-install:
   - docker build -t mankit752/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true USERNAME/react-test npm test
+  - docker run -e CI=true mankit752/react-test npm test
 
 after_success:
   - docker build -t mankit752/multi-client -f ./client
